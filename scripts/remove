@@ -25,27 +25,31 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Removing system configurations related to $app..."
 
-### This should be a symetric version of what happens in the install script
-
-ynh_config_remove_fail2ban
+#ynh_config_remove_fail2ban
 
 ynh_config_remove_logrotate
 
 # Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
-if ynh_hide_warnings yunohost service status "$app" >/dev/null; then
-    yunohost service remove "$app"
+if ynh_hide_warnings yunohost service status "$app-web" >/dev/null; then
+    yunohost service remove "$app-web"
+fi
+if ynh_hide_warnings yunohost service status "$app-worker" >/dev/null; then
+    yunohost service remove "$app-worker"
 fi
 ynh_config_remove_systemd
 
 ynh_config_remove_nginx
 
-ynh_config_remove_phpfpm
-
 # Remove other various files specific to the app... such as:
 
 ynh_safe_rm "/etc/cron.d/$app"
 
-ynh_safe_rm "/etc/$app"
+redis_db=$(basename $(grep -Po "location=redis://.*" $install_dir/pretix.cfg))
+ynh_redis_remove_db $redis_db
+redis_db_backend=$(basename $(grep -Po "backend=redis://.*" $install_dir/pretix.cfg))
+ynh_redis_remove_db $redis_db_backend
+redis_db_broker=$(basename $(grep -Po "broker=redis://.*" $install_dir/pretix.cfg)) 
+ynh_redis_remove_db $redis_db_broker
 
 #=================================================
 # END OF SCRIPT

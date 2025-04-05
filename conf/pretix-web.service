@@ -1,18 +1,22 @@
 [Unit]
-Description=Small description of the service
-After=network.target
+Description=pretix web service
+After=network.target redis.service postgresql.service
 
 [Service]
 Type=simple
 User=__APP__
 Group=__APP__
 WorkingDirectory=__INSTALL_DIR__/
-ExecStart=__INSTALL_DIR__/script
+Environment="VIRTUAL_ENV=__INSTALL_DIR__/venv"
+Environment="PATH=__INSTALL_DIR__/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=__INSTALL_DIR__/venv/bin/gunicorn pretix.wsgi \
+                      --name pretix --workers 5 \
+                      --max-requests 1200  --max-requests-jitter 50 \
+                      --log-level=info --bind=127.0.0.1:__PORT__
+Restart=on-failure
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 
-### Depending on specificities of your service/app, you may need to tweak these
-### .. but this should be a good baseline
 # Sandboxing options to harden security
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 NoNewPrivileges=yes
