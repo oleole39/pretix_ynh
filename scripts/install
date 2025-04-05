@@ -61,8 +61,8 @@ ynh_app_setting_set --key=max_size_email_auto_attachment --value=$max_size_email
 #=================================================
 ynh_script_progression "Installing Python app & dependencies..."
 
-# Make sure required Python version is installed
-check_python $py_version
+# Make sure available Python version satisfies the app's minimum requirements or exit
+check_python_min_req $min_python_version_required
 
 pushd $install_dir
     # Set virtual environment
