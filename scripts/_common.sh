@@ -23,7 +23,7 @@ check_python_min_req() {
     if command -v python$py_vshort &>/dev/null; then
         installed_version=$(python$py_vshort --version 2>/dev/null)
         installed_version=${installed_version#Python }
-        if [[ $(compare_format $installed_version) -ge $(compare_format $min_req_version) ]]; then
+        if [ $(compare_format $installed_version) -ge $(compare_format $min_req_version) ]; then
             echo "Python version installed ($py_version) satisfies $app requirement (>=$min_req_version)."
             export 
         else
