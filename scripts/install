@@ -58,6 +58,13 @@ max_size_email_auto_attachment=1
 ynh_app_setting_set --key=max_size_email_auto_attachment --value=$max_size_email_auto_attachment
 
 #=================================================
+# INSTALL NODEJS
+#=================================================
+ynh_script_progression "Installing NodeJS..."
+
+ynh_nodejs_install
+
+#=================================================
 # INSTALL PYTHON APP & DEPENDENCIES
 #=================================================
 ynh_script_progression "Installing Python app & dependencies..."
@@ -136,7 +143,7 @@ yunohost service add "$app-web" --description="Gunicorn for pretix" --log="/var/
 yunohost service add "$app-worker" --description="Celery for pretix" --log="/var/log/$app/$app-worker.log"
 
 # Add cron job running as user "$app"
-ynh_add_config --template="$app.cron" --destination="/etc/cron.d/$app" 
+ynh_config_add --template="$app.cron" --destination="/etc/cron.d/$app" 
 #~ chown root:root /etc/cron.d/$app
 #chmod 644 /etc/cron.d/$app
 

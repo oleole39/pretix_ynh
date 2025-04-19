@@ -4,6 +4,7 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
+nodejs_version="22"
 min_python_version_required=3.9
 py_vshort="${min_python_version_required%.*}"
 
