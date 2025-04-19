@@ -47,7 +47,7 @@ set_venv() {
     local venv_path=$1
 
     # Create a virtualenv with python installed by myynh_install_python():
-    ynh_exec_as_app /usr/local/bin/python$py_vshort -m venv --upgrade-deps $venv_path
+    ynh_exec_as_app /usr/bin/python$py_vshort -m venv --upgrade-deps $venv_path
 
     # Print some version information:
     ynh_print_info "venv Python version: $($venv_path/bin/python$py_vshort -VV)"
