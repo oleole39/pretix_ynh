@@ -84,14 +84,14 @@ pushd $install_dir
     echo "source $install_dir/.venv/bin/activate" >> .bashrc
 
     # Install python dependencies
-    ynh_exec_as_app .venv/bin/pip$py_vshort install --upgrade pip setuptools wheel gunicorn 2>&1
+    ynh_hide_warnings ynh_exec_as_app .venv/bin/pip$py_vshort install --upgrade pip setuptools wheel gunicorn
     
     # Install app
-    ynh_exec_as_app .venv/bin/pip$py_vshort install pretix 2>&1
+    ynh_hide_warnings ynh_exec_as_app .venv/bin/pip$py_vshort install pretix
     
     # Compile static files and translation data and create the database structure
-    ynh_exec_as_app /usr/bin/python$py_vshort -m pretix migrate 2>&1
-    ynh_exec_as_app /usr/bin/python$py_vshort -m pretix rebuild 2>&1
+    ynh_hide_warnings ynh_exec_as_app .venv/bin/python$py_vshort -m pretix migrate
+    ynh_hide_warnings ynh_exec_as_app .venv/bin/python$py_vshort -m pretix rebuild
 popd
 
 chown -R "$app:www-data" "$install_dir"
