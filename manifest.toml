@@ -7,7 +7,7 @@ name = "pretix"
 description.en = "All-in-one ticketing software for your events"
 description.fr = "Logiciel de billeterie tout-en-un pour vos évènements"
 
-version = "v2025.3.0~ynh1"
+version = "2025.3.0~ynh1"
 
 maintainers = ["oleole39"]
 
