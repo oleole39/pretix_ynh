@@ -7,43 +7,30 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-### Settings are automatically loaded as bash variables
-### in every app script context, therefore typically these will exist:
-### - $domain
-### - $path
-### - $language
-### - $install_dir
-### - $port
-### ...
-
-### In the context of upgrade,
-### - resources are automatically provisioned / updated / deleted (depending on existing resources)
-### - a safety backup is automatically created by the core and will be restored if the upgrade fails
+# Load settings used as template tags 
+plugins_default=$(ynh_app_setting_get --app=$app --key=plugins_default)
+plugins_exclude=$(ynh_app_setting_get --app=$app --key=plugins_exclude)
+obligatory_2fa=$(ynh_app_setting_get --app=$app --key=obligatory_2fa)
+log_level=$(ynh_app_setting_get --app=$app --key=log_level)
+mail_user=$(ynh_app_setting_get --app=$app --key=mail_user)
+mail_domain=$(ynh_app_setting_get --app=$app --key=mail_domain)
+mail_admins=$(ynh_app_setting_get --app=$app --key=mail_admins)
+lang_enabled=$(ynh_app_setting_get --app=$app --key=lang_enabled)
+custom_lang_dir=$(ynh_app_setting_get --app=$app --key=custom_lang_dir)
+cache_tickets=$(ynh_app_setting_get --app=$app --key=cache_tickets)
+order_code=$(ynh_app_setting_get --app=$app --key=order_code)
+ticket_secret=$(ynh_app_setting_get --app=$app --key=ticket_secret)
+voucher_code=$(ynh_app_setting_get --app=$app --key=voucher_code)
+max_size_image=$(ynh_app_setting_get --app=$app --key=max_size_image)
+max_size_email_auto_attachment=$(ynh_app_setting_get --app=$app --key=max_size_email_auto_attachment)
 
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="stop"
-
-#=================================================
-# ENSURE DOWNWARD COMPATIBILITY
-#=================================================
-ynh_script_progression "Ensuring downward compatibility..."
-
-ynh_app_setting_set_default --key=php_upload_max_filesize --value=50M
-ynh_app_setting_set_default --key=php_post_max_size --value=50M
-
-### N.B. : the following setting migration snippets are provided as *EXAMPLES*
-### of what you may want to do in some cases (e.g. a setting was not defined on
-### some legacy installs and you therefore want to initiaze stuff during upgrade)
-
-# If db_name doesn't exist, create it
-# ynh_app_setting_set_default --key=db_name --value="$(ynh_sanitize_dbid --db_name=$app)"
-
-# If install_dir doesn't exist, create it
-# ynh_app_setting_set_default --key=install_dir --value="/var/www/$app"
+ynh_systemctl --service="$app-web" --action="stop"
+ynh_systemctl --service="$app-worker" --action="stop"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -79,7 +66,7 @@ ynh_config_add --template="some_config_file" --destination="$install_dir/some_co
 ### You may need to use chmod 600 instead of 400,
 ### for example if the app is expected to be able to modify its own config
 chmod 400 "$install_dir/some_config_file"
-chown "$app:$app" "$install_dir/some_config_file"
+chown "$app:www-data" "$install_dir/some_config_file"
 
 ### For more complex cases where you want to replace stuff using regexes,
 ### you shoud rely on ynh_replace (which is basically a wrapper for sed)

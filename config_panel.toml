@@ -1,0 +1,173 @@
+#:schema https://github.com/YunoHost/apps/raw/master/schemas/config_panel.v1.schema.json
+
+version = "1.0"
+
+[main]
+
+name.en = "Main configuration"
+name.fr = "Configuration principale"
+
+services = ["__APP__"]
+
+    [main.mail]
+    name.en = "Emails"
+    name.fr = "Emails"
+
+###TODO finish splitting MAIL USER & MAIL DOMAIN instead of FROM ?
+        [main.mail.mail_user]
+        ask.en = "'From' address"
+        ask.fr = "Adresse 'From'"
+        type = "email"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "The email address to set as 'From' header in outgoing emails by the system"
+        help.fr = "L'adresse email à afficher dans l'en-tête 'From' des emails envoyés par le système"
+        
+        [main.mail.mail_domain]
+        ask.en = "'From' address"
+        ask.fr = "Adresse 'From'"
+        type = "email"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "The email address to set as 'From' header in outgoing emails by the system"
+        help.fr = "L'adresse email à afficher dans l'en-tête 'From' des emails envoyés par le système"
+        
+        [main.mail.admins]
+        ask.en = "Admin addresse(s)"
+        ask.fr = "Adresse(s) Admin"
+        type = "text"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Comma-separated list of email addresses that should receive a report about every error code 500 thrown by pretix"
+        help.fr = "Liste d'adresses emails séparées par des virgules auxquelles envoyer un rapport de chaque erreur code 500 rencontrée par pretix"
+
+    [main.languages]
+    name.en = "Languages"
+    name.fr = "Langues"
+
+        [main.languages.enabled]
+        ask.en = "Limit enabled languages"
+        ask.fr = "Limiter les langues activées"
+        type = "string"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "pretix comes with a number of translations. All languages are enabled by default. If you want to limit the languages available in your installation, you can enter comma-separated locales here"
+        help.fr = "pretix vient avec un nombre de traductions. Toutes les langues sont activées par défaut. Si vous voulez limiter les langues disponibles dans votre instance, vous pouvez entrer ici une liste de locales séparées par des virgules"
+        example = "de,en,fr"
+        
+        [main.languages.custom_lang_dir]
+        ask.en = "Additional translations path"
+        ask.fr = "Chemin des traductions additionnelles"
+        type = "path"
+        bind = "languages.path:__INSTALL_DIR__/pretix.cfg"
+        help.en = "Path at which pretix shall search for additional translations"
+        help.fr = "Chemin auquel pretix doit chercher des traductions additionelles"
+        example = "/path/to/my/translations"
+        
+    [main.security]
+    name.en = "Security"
+    name.fr = "Sécurité"
+
+        [main.security.obligatory_2fa]
+        ask.en = "Obligatory 2FA"
+        ask.fr = "A2F obligatoire"
+        type = "boolean"
+        yes = "true"
+        no = "false"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Whether to enable the obligatory usage of two-factor authentication for users of the pretix backend. Defaults to 'false'"
+        help.fr = "Rendre obligatoire l'usage de l'authentification à double facteurs pour les utilisateurs du backend de pretix. Par défaut: 'false'"
+        
+        [main.security.order_code]
+        ask.en = "Order ID's length"
+        ask.fr = "Longueur de l'ID de commande"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Max: 15. Default: 5"
+        help.fr = "Max: 15. Par défaut: 5"
+        
+        [main.security.ticket_secret]
+        ask.en = "QR Codes' secret length on tickets"
+        ask.fr = "Longueur du secret dans les QR-code des billets"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Max: 63. Default: 32"
+        help.fr = "Max: 63. Par défaut: 32"
+        
+        [main.security.voucher_code]
+        ask.en = "Voucher ID's length"
+        ask.fr = "Longueur de l'ID du reçu"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Max: 254. Default: 16"
+        help.fr = "Max: 254. Par défaut: 16"
+
+
+    [main.plugins]
+    name.en = "Plugins"
+    name.fr = "Extensions"
+
+        [main.security.plugins_default]
+        ask.en = "Default Plugins"
+        ask.fr = "Extensions par défaut"
+        type = "text"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "A comma-separated list of plugins that are enabled by default for all new events"
+        help.fr = "Une liste séparée par des virgules des extensions activées par défaut pour tous les nouveaux évènements"
+        example = "pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists"
+        
+        [main.security.plugins_exclude]
+        ask.en = "Plugins to exclude"
+        ask.fr = "Extensions à exclure"
+        type = "text"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "A comma-separated list of plugins that are not available even though they are installed"
+        help.fr = "Une liste séparée par des virgules des extensions à ne pas afficher comme disponibles même si elles sont installées"
+        example = "pretix.plugins.statistics,pretix.plugins.checkinlists"
+        
+    [main.storage]
+    name.en = "Storage"
+    name.fr = "Stockage"
+
+        [main.security.tickets]
+        ask.en = "Ticket caching"
+        ask.fr = "Cache des billets"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Number of hours tickets are cached. Defaults to 48"
+        help.fr = "Nombre d'heures pour lesquelles pour lesquelles les billets sont mis en cache. Par défault: 48"
+        
+        [main.security.max_size_image]
+        ask.en = "Max upload size for image"
+        ask.fr = "Taille maximum pour les images envoyées"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "(in MiB). Defaults to 10"
+        help.fr = "(en MiB). Par défault: 10"
+        
+        [main.security.max_size_email_auto_attachment]
+        ask.en = "Max attachments' size"
+        ask.en = "Taille maximum des pièces jointes"
+        type = "number"
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Max upload size for email attachments of automatically sent emails in MiB. Defaults to 1"
+        help.fr = "Taille maximale des pièces jointes des emails automatiques, en MiB. Par défaut: 1"
+        
+    [main.debug]
+    name.en = "Debugging"
+    name.fr = "Débogage"
+
+        [main.security.log_level]
+        ask.en = "Console and file's log level"
+        ask.fr = "Profil de journalisation"
+        type = "select"
+        choices = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        bind = ":__INSTALL_DIR__/pretix.cfg"
+        help.en = "Default to 'INFO'"
+        help.fr = "Par défault: 'INFO'"
+
+
+## ---------------------------------------------------------------------
+## IMPORTANT: with the exception of bind=null questions,
+## question IDs should almost **always** correspond to an app setting
+## initialized / reused during install/upgrade.
+## Not doing so may result in inconsistencies between the config panel mechanism
+## and the use of ynh_add_config
+## ---------------------------------------------------------------------
+

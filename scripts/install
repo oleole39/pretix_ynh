@@ -11,49 +11,50 @@ source /usr/share/yunohost/helpers
 # INITIALIZE AND STORE SETTINGS
 #=================================================
 
-$plugins_default="pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists"
+# Below settings are used as template tags in 'pretix.cfg' config file
+plugins_default="pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists"
 ynh_app_setting_set --key=plugins_default --value=$plugins_default
 
-$plugins_exclude=""
+plugins_exclude=""
 ynh_app_setting_set --key=plugins_exclude --value=$plugins_exclude
 
-$obligatory_2fa=false
+obligatory_2fa=false
 ynh_app_setting_set --key=obligatory_2fa --value=$obligatory_2fa
 
-$log_level="INFO"
+log_level="INFO"
 ynh_app_setting_set --key=log_level --value=$log_level
 
-$mail_user=$app
+mail_user=$app
 ynh_app_setting_set --key=mail_user --value=$mail_user
 
-$mail_domain=$domain
+mail_domain=$domain
 ynh_app_setting_set --key=mail_domain --value=$mail_domain
 
-$mail_admins=$(ynh_user_get_info --username="$admin" --key="mail")
+mail_admins=$(ynh_user_get_info --username="$admin" --key="mail")
 ynh_app_setting_set --key=mail_admins --value=$mail_admins
 
-$lang_enabled=""
+lang_enabled=""
 ynh_app_setting_set --key=lang_enabled --value=$lang_enabled
 
-$custom_lang_dir=""
+custom_lang_dir=""
 ynh_app_setting_set --key=custom_lang_dir --value=$custom_lang_dir
 
-$cache_tickets=72
+cache_tickets=72
 ynh_app_setting_set --key=cache_tickets --value=$cache_tickets
 
-$order_code=5
+order_code=5
 ynh_app_setting_set --key=order_code --value=$order_code
 
-$ticket_secret=32
+ticket_secret=32
 ynh_app_setting_set --key=ticket_secret --value=$ticket_secret
 
-$voucher_code=16
+voucher_code=16
 ynh_app_setting_set --key=voucher_code --value=$voucher_code
 
-$max_size_image=10
+max_size_image=10
 ynh_app_setting_set --key=max_size_image --value=$max_size_image
 
-$max_size_email_auto_attachment=1
+max_size_email_auto_attachment=1
 ynh_app_setting_set --key=max_size_email_auto_attachment --value=$max_size_email_auto_attachment
 
 #=================================================
@@ -104,7 +105,7 @@ redis_unlock "redis_db_backend"
 # Copy & hydrate template config file
 ynh_config_add --template="pretix.cfg" --destination=$install_dir
 chmod 600 $install_dir/pretix.cfg
-chown "$app:$app" $install_dir/pretix.cfg
+chown "$app:www-data" $install_dir/pretix.cfg
 
 #=================================================
 # BUILD APP
@@ -136,7 +137,7 @@ yunohost service add "$app-worker" --description="Celery for pretix" --log="/var
 
 # Add cron job running as user "$app"
 ynh_add_config --template="$app.cron" --destination="/etc/cron.d/$app" 
-#chown root:root /etc/cron.d/$app
+#~ chown root:root /etc/cron.d/$app
 #chmod 644 /etc/cron.d/$app
 
 # Use logrotate to manage application logfile(s)
